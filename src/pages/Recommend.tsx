@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -10,41 +10,9 @@ import { apiService, RecommendationResponse, WeatherResponse } from '@/services/
 const Recommend = () => {
   const [recommendation, setRecommendation] = useState<RecommendationResponse | null>(null);
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
-  const [isLoadingRecommendation, setIsLoadingRecommendation] = useState(false);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
-
-  // Debounce city input for weather fetch
-  const fetchWeather = useCallback(async (city: string) => {
-    if (!city || city.length < 2) {
-      setWeather(null);
-      setWeatherError(null);
-      return;
-    }
-
-    setIsLoadingWeather(true);
-    setWeatherError(null);
-
-    try {
-      const data = await apiService.getWeather(city);
-      setWeather(data);
-    } catch (error) {
-      setWeatherError('Unable to fetch weather data. Please check the city name.');
-      setWeather(null);
-    } finally {
-      setIsLoadingWeather(false);
-    }
-  }, []);
-
-  // Debounced city change handler
-  let cityTimeout: NodeJS.Timeout;
-  const handleCityChange = (city: string) => {
-    clearTimeout(cityTimeout);
-    cityTimeout = setTimeout(() => {
-      fetchWeather(city);
-    }, 800);
-  };
-
+  const [isLoadingRecommendation, setIsLoadingRecommendation] = useState(false);
+  
   const handleSubmit = async (formData: {
     nitrogen: string;
     phosphorus: string;
@@ -56,6 +24,7 @@ const Recommend = () => {
   }) => {
     setIsLoadingRecommendation(true);
     setRecommendation(null);
+    setWeatherError(null);
 
     try {
       const data = await apiService.getRecommendation({
@@ -69,17 +38,16 @@ const Recommend = () => {
       });
 
       setRecommendation(data);
+      setWeather(data.weather);
+
       
       toast({
         title: "Recommendation Ready!",
         description: `Based on your soil data, we recommend growing ${data.crop}.`,
       });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to get recommendation. Please ensure the backend server is running.",
-        variant: "destructive",
-      });
+      setWeather(null);
+      setWeatherError("Please enter a valid city name");
     } finally {
       setIsLoadingRecommendation(false);
     }
@@ -108,7 +76,6 @@ const Recommend = () => {
               <SoilForm
                 onSubmit={handleSubmit}
                 isLoading={isLoadingRecommendation}
-                onCityChange={handleCityChange}
               />
             </div>
 
@@ -121,7 +88,7 @@ const Recommend = () => {
                 </h3>
                 <WeatherCard
                   weather={weather}
-                  isLoading={isLoadingWeather}
+                  isLoading={isLoadingRecommendation}
                   error={weatherError}
                 />
               </div>

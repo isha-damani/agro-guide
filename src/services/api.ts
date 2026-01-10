@@ -5,6 +5,7 @@ export interface RecommendationResponse {
   advisory: string;
   confidence?: number;
   top_factors?: string[];
+  weather: WeatherResponse;
 }
 
 
@@ -32,15 +33,6 @@ export const apiService = {
     }
 
     return response.json();
-  },
-
-  async getWeather(city: string): Promise<WeatherResponse> {
-    return {
-      temperature: 28,
-      humidity: 70,
-      description: "Partly cloudy",
-      city: city,
-    };
   },
   
 };

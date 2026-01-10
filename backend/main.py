@@ -1,11 +1,12 @@
 import joblib
 import numpy as np
 from pydantic import BaseModel, Field
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import os
+import requests
 
 model = joblib.load("crop_model.pkl")
 
@@ -116,15 +117,45 @@ column_map = {
     "Rainfall": "rainfall"
 }
 
+WEATHER_API_KEY = "a22afa824b1efcdb4f0f82b3107b3469"
+
+def get_weather(city: str):
+    url = (
+        "https://api.openweathermap.org/data/2.5/weather"
+        f"?q={city}&appid={WEATHER_API_KEY}&units=metric"
+    )
+
+    res = requests.get(url)
+    data = res.json()
+
+    print("WEATHER STATUS:", res.status_code)
+    print("WEATHER DATA:", data)
+
+    if res.status_code != 200:
+        message = data.get("message", "Weather API failed")
+        raise Exception(message)
+
+    temperature = data["main"]["temp"]
+    humidity = data["main"]["humidity"]
+    description = data["weather"][0]["description"]
+
+    return temperature, humidity, description
+
+
 
 @app.post("/recommend")
 def recommend(data: CropInput):
+    try:
+        temperature, humidity, description = get_weather(data.city)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
     features = np.array([[
         data.nitrogen,
         data.phosphorus,
         data.potassium,
-        data.temperature,
-        70,  # humidity (will replace with real API later)
+        temperature,
+        humidity,
         data.ph,
         data.rainfall
     ]])
@@ -168,5 +199,13 @@ def recommend(data: CropInput):
         "crop": prediction.capitalize(),
         "confidence": round(confidence, 3),
         "advisory": "Recommended based on soil and weather conditions.",
-        "top_factors": explanation
+        "top_factors": explanation,
+        "weather": {
+            "city": data.city,
+            "temperature": temperature,
+            "humidity": humidity,
+            "description": description
+        }
     }
+
+

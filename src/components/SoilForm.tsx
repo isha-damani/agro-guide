@@ -18,10 +18,9 @@ interface SoilFormData {
 interface SoilFormProps {
   onSubmit: (data: SoilFormData) => void;
   isLoading: boolean;
-  onCityChange: (city: string) => void;
 }
 
-const SoilForm = ({ onSubmit, isLoading, onCityChange }: SoilFormProps) => {
+const SoilForm = ({ onSubmit, isLoading }: SoilFormProps) => {
   const [formData, setFormData] = useState<SoilFormData>({
     nitrogen: '',
     phosphorus: '',
@@ -35,10 +34,6 @@ const SoilForm = ({ onSubmit, isLoading, onCityChange }: SoilFormProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
-    if (name === 'city') {
-      onCityChange(value);
-    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
