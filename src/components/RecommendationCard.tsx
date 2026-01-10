@@ -1,12 +1,9 @@
 import { Sprout, Lightbulb } from 'lucide-react';
 import { Card } from './ui/card';
+import { RecommendationResponse } from "@/services/api";
 
 interface RecommendationCardProps {
-  recommendation: {
-    crop: string;
-    advisory: string;
-    confidence?: number;
-  };
+  recommendation: RecommendationResponse;
 }
 
 const RecommendationCard = ({ recommendation }: RecommendationCardProps) => {
@@ -39,6 +36,13 @@ const RecommendationCard = ({ recommendation }: RecommendationCardProps) => {
             <p className="text-sm text-muted-foreground leading-relaxed">
               {recommendation.advisory}
             </p>
+            {recommendation.top_factors && (
+              <ul className="mt-3 text-sm text-muted-foreground list-disc list-inside">
+                {recommendation.top_factors.map((factor, idx) => (
+                  <li key={idx}>{factor}</li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>

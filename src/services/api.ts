@@ -2,9 +2,12 @@ const BASE_URL = "http://127.0.0.1:8000";
 
 export interface RecommendationResponse {
   crop: string;
-  confidence: number;
   advisory: string;
+  confidence?: number;
+  top_factors?: string[];
 }
+
+
 
 export interface WeatherResponse {
   temperature: number;
