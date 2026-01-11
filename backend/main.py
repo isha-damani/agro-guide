@@ -7,6 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 model = joblib.load("crop_model.pkl")
 
@@ -117,7 +120,7 @@ column_map = {
     "Rainfall": "rainfall"
 }
 
-WEATHER_API_KEY = "a22afa824b1efcdb4f0f82b3107b3469"
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 def get_weather(city: str):
     url = (
