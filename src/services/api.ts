@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = "https://agro-guide-backend-0v5t.onrender.com";
 
 export interface RecommendationResponse {
   crop: string;
