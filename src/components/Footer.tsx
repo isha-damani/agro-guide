@@ -1,4 +1,4 @@
-import { Github, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import faviconLogo from '/favicon.png';
 
@@ -43,16 +43,22 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground">Connect</h4>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://github.com/isha-damani"
                 className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors"
               >
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="mailto:ishadamani25@gmail.com"
                 className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors"
               >
                 <Mail className="w-5 h-5" />
+              </a>
+              <a
+                href="https://linkedin.com/in/isha-a-damani-935611336"
+                className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors"
+              >
+                <Linkedin className="w-5 h-5" />
               </a>
             </div>
           </div>

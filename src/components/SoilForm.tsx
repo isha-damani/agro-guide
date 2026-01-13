@@ -10,26 +10,19 @@ interface SoilFormData {
   phosphorus: string;
   potassium: string;
   ph: string;
-  temperature: string;
   rainfall: string;
   city: string;
 }
 
 interface SoilFormProps {
-  onSubmit: (data: SoilFormData) => void;
+  formData: SoilFormData;
+  setFormData: React.Dispatch<React.SetStateAction<SoilFormData>>;
+  onSubmit: () => void;
   isLoading: boolean;
 }
 
-const SoilForm = ({ onSubmit, isLoading }: SoilFormProps) => {
-  const [formData, setFormData] = useState<SoilFormData>({
-    nitrogen: '',
-    phosphorus: '',
-    potassium: '',
-    ph: '',
-    temperature: '',
-    rainfall: '',
-    city: '',
-  });
+const SoilForm = ({ formData, setFormData, onSubmit, isLoading }: SoilFormProps) => {
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,7 +31,7 @@ const SoilForm = ({ onSubmit, isLoading }: SoilFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit();
   };
 
   const inputGroups = [
@@ -56,7 +49,6 @@ const SoilForm = ({ onSubmit, isLoading }: SoilFormProps) => {
       title: 'Weather Conditions',
       icon: Thermometer,
       inputs: [
-        { name: 'temperature', label: 'Temperature', placeholder: 'e.g., 25', unit: '°C' },
         { name: 'rainfall', label: 'Rainfall', placeholder: 'e.g., 200', unit: 'mm' },
       ],
     },

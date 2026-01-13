@@ -19,10 +19,53 @@ const RecommendationCard = ({ recommendation }: RecommendationCardProps) => {
         <p className="text-4xl font-serif font-bold text-primary mt-2">
           {recommendation.crop}
         </p>
-        {recommendation.confidence && (
-          <p className="text-sm text-muted-foreground mt-1">
-            Confidence: {Math.round(recommendation.confidence * 100)}%
-          </p>
+        {recommendation.weather && (
+          <div className="flex justify-center gap-3 mt-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
+              🌡 {recommendation.weather.temperature}°C
+            </span>
+            <span className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
+              💧 {recommendation.weather.humidity}%
+            </span>
+            <span className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full capitalize">
+              ☁️ {recommendation.weather.description}
+            </span>
+          </div>
+        )}
+
+        {recommendation.top_crops && (
+          <div className="mt-4">
+            <h4 className="text-sm font-medium text-muted-foreground mb-2">
+              Top Alternatives
+            </h4>
+            <ul className="space-y-1 text-sm text-foreground">
+              {recommendation.top_crops.map((item, idx) => (
+                <li key={idx}>
+                  {item.crop} — {Math.round(item.probability * 100)}%
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {recommendation.confidence !== undefined && (
+          <div className="mt-4">
+            <div className="flex justify-between text-sm text-muted-foreground mb-1">
+              <span>Confidence</span>
+              <span>{Math.round(recommendation.confidence * 100)}%</span>
+            </div>
+
+            <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+            <div className={`h-full transition-all duration-500 ${
+                  recommendation.confidence > 0.8
+                    ? "bg-green-500"
+                    : recommendation.confidence > 0.4
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
+                style={{ width: `${recommendation.confidence * 100}%` }}
+              />
+            </div>
+          </div>
         )}
       </div>
 
@@ -37,11 +80,29 @@ const RecommendationCard = ({ recommendation }: RecommendationCardProps) => {
               {recommendation.advisory}
             </p>
             {recommendation.top_factors && (
-              <ul className="mt-3 text-sm text-muted-foreground list-disc list-inside">
+              <div className="mt-4 space-y-2">
                 {recommendation.top_factors.map((factor, idx) => (
-                  <li key={idx}>{factor}</li>
+                  <div
+                    key={idx}
+                    className="flex items-start gap-2 text-sm bg-background/60 p-2 rounded-lg"
+                  >
+                    <span className="text-lg">
+                      {factor.toLowerCase().includes("nitrogen") && "🧪"}
+                      {factor.toLowerCase().includes("temperature") && "🌡"}
+                      {factor.toLowerCase().includes("rain") && "🌧"}
+                      {factor.toLowerCase().includes("humidity") && "💧"}
+                      {!(
+                        factor.toLowerCase().includes("nitrogen") ||
+                        factor.toLowerCase().includes("temperature") ||
+                        factor.toLowerCase().includes("rain") ||
+                        factor.toLowerCase().includes("humidity")
+                      ) && "⭐"}
+                    </span>
+
+                    <span className="text-muted-foreground">{factor}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
         </div>

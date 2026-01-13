@@ -7,24 +7,27 @@ import WeatherCard from '@/components/WeatherCard';
 import RecommendationCard from '@/components/RecommendationCard';
 import { apiService, RecommendationResponse, WeatherResponse } from '@/services/api';
 
+
 const Recommend = () => {
+  const [formData, setFormData] = useState({
+    nitrogen: '',
+    phosphorus: '',
+    potassium: '',
+    ph: '',
+    rainfall: '',
+    city: '',
+  });
+
   const [recommendation, setRecommendation] = useState<RecommendationResponse | null>(null);
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [weatherError, setWeatherError] = useState<string | null>(null);
   const [isLoadingRecommendation, setIsLoadingRecommendation] = useState(false);
   
-  const handleSubmit = async (formData: {
-    nitrogen: string;
-    phosphorus: string;
-    potassium: string;
-    ph: string;
-    temperature: string;
-    rainfall: string;
-    city: string;
-  }) => {
+  const handleSubmit = async () => {
     setIsLoadingRecommendation(true);
     setRecommendation(null);
     setWeatherError(null);
+    
 
     try {
       const data = await apiService.getRecommendation({
@@ -32,14 +35,12 @@ const Recommend = () => {
         phosphorus: parseFloat(formData.phosphorus),
         potassium: parseFloat(formData.potassium),
         ph: parseFloat(formData.ph),
-        temperature: parseFloat(formData.temperature),
         rainfall: parseFloat(formData.rainfall),
         city: formData.city,
       });
 
       setRecommendation(data);
       setWeather(data.weather);
-
       
       toast({
         title: "Recommendation Ready!",
@@ -74,6 +75,8 @@ const Recommend = () => {
             {/* Form Section */}
             <div className="lg:col-span-2">
               <SoilForm
+                formData={formData}
+                setFormData={setFormData}
                 onSubmit={handleSubmit}
                 isLoading={isLoadingRecommendation}
               />

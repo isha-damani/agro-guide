@@ -50,7 +50,6 @@ class CropInput(BaseModel):
     phosphorus: float = Field(..., ge=0)
     potassium: float = Field(..., ge=0)
     ph: float = Field(..., ge=0, le=14)
-    temperature: float
     rainfall: float = Field(..., ge=0)
     city: str
 
@@ -168,6 +167,18 @@ def recommend(data: CropInput):
     prediction = model.classes_[pred_index]
     confidence = float(probs[pred_index])
 
+    classes = model.classes_
+
+    top_indices = probs.argsort()[-3:][::-1]
+
+    top_crops = []
+    for idx in top_indices:
+        top_crops.append({
+            "crop": classes[idx].capitalize(),
+            "probability": round(float(probs[idx]), 3)
+        })
+
+
     feature_names = [
         "Nitrogen",
         "Phosphorus",
@@ -203,6 +214,7 @@ def recommend(data: CropInput):
         "confidence": round(confidence, 3),
         "advisory": "Recommended based on soil and weather conditions.",
         "top_factors": explanation,
+        "top_crops": top_crops,
         "weather": {
             "city": data.city,
             "temperature": temperature,
@@ -210,5 +222,6 @@ def recommend(data: CropInput):
             "description": description
         }
     }
+
 
 
