@@ -42,7 +42,6 @@ app.add_middleware(
 )
 
 
-
 class CropInput(BaseModel):
     nitrogen: float = Field(..., ge=0)
     phosphorus: float = Field(..., ge=0)
