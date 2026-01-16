@@ -79,19 +79,24 @@ python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --reload
+```
 Backend runs at:
 http://127.0.0.1:8000
-Frontend (root directory)
+### Frontend (root directory)
+```bash
 npm install
 npm run dev
+```
 Frontend runs at:
 http://localhost:5173
-🌐 Live Demo
+
+### 🌐 Live Demo
 
 Frontend:
 https://agro-guide-frontend.onrender.com/
 Backend API:
 https://agro-guide-backend-0v5t.onrender.com/
+
 ## 🧠 Future Enhancements
 
 - 🤖 AI-powered plant care chatbot  
